@@ -1,4 +1,4 @@
-resource "aws_security_group" "uptime_kuma_db" {
+resource "aws_security_group" "db" {
   # checkov:skip=CKV2_AWS_5: Associated to RDS database
   name        = "${var.name_prefix}${local.module_name}-db"
   vpc_id      = var.vpc_id
@@ -6,8 +6,8 @@ resource "aws_security_group" "uptime_kuma_db" {
   tags        = var.tags
 }
 
-resource "aws_vpc_security_group_ingress_rule" "uptime_kuma_db" {
-  security_group_id = aws_security_group.uptime_kuma_db.id
+resource "aws_vpc_security_group_ingress_rule" "db" {
+  security_group_id = aws_security_group.db.id
   from_port         = var.db_port
   to_port           = var.db_port
   ip_protocol       = "tcp"
@@ -16,15 +16,15 @@ resource "aws_vpc_security_group_ingress_rule" "uptime_kuma_db" {
   tags              = var.tags
 }
 
-resource "aws_vpc_security_group_egress_rule" "uptime_kuma_db_all" {
-  security_group_id = aws_security_group.uptime_kuma_db.id
+resource "aws_vpc_security_group_egress_rule" "db_all" {
+  security_group_id = aws_security_group.db.id
   ip_protocol       = "-1"
   cidr_ipv4         = "0.0.0.0/0"
   description       = "Allow all outbound connections"
   tags              = var.tags
 }
 
-ephemeral "random_password" "uptime_kuma_db_password" {
+ephemeral "random_password" "db_password" {
   length      = 20
   special     = false
   min_lower   = 1
@@ -32,11 +32,11 @@ ephemeral "random_password" "uptime_kuma_db_password" {
   min_numeric = 1
 }
 
-resource "aws_ssm_parameter" "uptime_kuma_db_password" {
+resource "aws_ssm_parameter" "db_password" {
   # checkov:skip=CKV_AWS_337: "CMK not required"
   name             = "/rds/${var.name_prefix}${local.module_name}/password"
   type             = "SecureString"
-  value_wo         = ephemeral.random_password.uptime_kuma_db_password.result
+  value_wo         = ephemeral.random_password.db_password.result
   value_wo_version = var.db_password_version
   tags             = var.tags
 }
@@ -51,13 +51,13 @@ module "db" {
   instance_class         = var.db_instance_type
   multi_az               = var.db_multi_az
   publicly_accessible    = var.db_publicly_accessible
-  vpc_security_group_ids = [aws_security_group.uptime_kuma_db.id]
+  vpc_security_group_ids = [aws_security_group.db.id]
   ca_cert_identifier     = var.db_ca_cert_identifier
 
   db_name                     = var.db_name
   username                    = var.db_username
   manage_master_user_password = false
-  password_wo                 = ephemeral.random_password.uptime_kuma_db_password.result
+  password_wo                 = ephemeral.random_password.db_password.result
   password_wo_version         = var.db_password_version
   port                        = var.db_port
 
