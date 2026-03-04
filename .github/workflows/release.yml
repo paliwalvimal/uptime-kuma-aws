@@ -7,9 +7,11 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
       - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v3
+        uses: hashicorp/setup-terraform@v4
       - name: Terraform Init
         id: init
         run: terraform init
@@ -19,11 +21,13 @@ jobs:
   checkov:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v6
         with:
-          python-version: 3.11
+          persist-credentials: false
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v6
+        with:
+          python-version: 3.13
       - name: Scan with Checkov
         id: checkov
         uses: bridgecrewio/checkov-action@v12
@@ -39,5 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [test, checkov]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
       - uses: softprops/action-gh-release@v2
