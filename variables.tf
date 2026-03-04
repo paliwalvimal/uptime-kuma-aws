@@ -1,7 +1,7 @@
 variable "name_prefix" {
   type        = string
   default = "vp-"
-  description = "Prefix to be added to the name of the resources"
+  description = "Prefix to add to the name of all the resources created by this module"
 }
 
 variable "cw_logs_retention_days" {
@@ -38,11 +38,6 @@ variable "create_internal_alb" {
   description = "Use internal facing application load balancer to expose uptime-kuma running on ECS"
 }
 
-variable "data_subnet_ids" {
-  type        = list(string)
-  description = "List of data subnet IDs to deploy the RDS database"
-}
-
 variable "route53_zone_id" {
   type        = string
   description = "Route53 zone ID to create the ALB DNS record"
@@ -71,6 +66,24 @@ variable "db_instance_type" {
   description = "Instance type for the RDS database"
 }
 
+variable "db_create_subnet_group" {
+  type = bool
+  default = true
+  description = "Whether to create a new subnet group for RDS instance"
+}
+
+variable "db_subnet_group_name" {
+  type        = string
+  default = ""
+  description = "Subnet group name to use for the RDS database"
+}
+
+variable "db_subnet_ids" {
+  type        = list(string)
+  default = []
+  description = "List of subnet IDs to use for creating db subnet group. Note: Required if `db_create_subnet_group` is set to true"
+}
+
 variable "db_allocated_storage" {
   type        = number
   default = 50
@@ -93,6 +106,12 @@ variable "db_username" {
   type        = string
   default = "admin"
   description = "Master/admin user to create"
+}
+
+variable "db_password_version" {
+  type        = number
+  default = 1
+  description = "To change database password, taint the random_password ephemeral resource and update the version number to update database password value in SSM parameter and RDS instance"
 }
 
 variable "db_port" {
@@ -173,16 +192,22 @@ variable "db_backup_retention_period" {
   description = "Number of days to retain the automatic backups"
 }
 
-variable "uptime_kuma_image" {
-  type        = string
-  default = "mirror.gcr.io/louislam/uptime-kuma@sha256:44014bc55a42037105faf371963dda525378cf8866b9b883c38ec18e54b9bd54"  # 2.1.3-slim
-  description = "Uptime Kuma image to use for the ECS task"
+variable "cloudwatch_logs_exports" {
+  type = list(string)
+  default = ["general", "audit", "error", "slowquery"]
+  description = "List of log types to export to CloudWatch for the RDS instance. Check [AWS doc](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_LogAccess.MariaDB.PublishtoCloudWatchLogs.html) for supported log types"
 }
 
-variable "nginx_image" {
-  type        = string
-  default = "mirror.gcr.io/nginxinc/nginx-unprivileged@sha256:846c4e33797e325a2f3d623d590610e5da8044fa907db91ce4c80dfa14d1df84" # 1.29-alpine-perl
-  description = "Nginx image to use for the ECS task"
+variable "ecs_container_insights_level" {
+  type = string
+  default = "enhanced"
+  description = "Container Insights level for ECS cluster. Supported values: `enhanced`, `enabled`, `disabled`"
+}
+
+variable "ecs_enable_guardduty_monitoring" {
+  type = bool
+  default = true
+  description = "Enable AWS GuardDuty Runtime Monitoring for the ECS cluster"
 }
 
 variable "ecs_task_family" {
@@ -207,6 +232,18 @@ variable "ecs_task_appautoscaling_threshold" {
   type        = string
   default = "60"
   description = "Threshold to use for scaling the service"
+}
+
+variable "ecs_uptime_kuma_image" {
+  type        = string
+  default = "mirror.gcr.io/louislam/uptime-kuma@sha256:44014bc55a42037105faf371963dda525378cf8866b9b883c38ec18e54b9bd54"  # 2.1.3-slim
+  description = "Uptime Kuma image to use for the ECS task"
+}
+
+variable "ecs_nginx_image" {
+  type        = string
+  default = "mirror.gcr.io/nginxinc/nginx-unprivileged@sha256:846c4e33797e325a2f3d623d590610e5da8044fa907db91ce4c80dfa14d1df84" # 1.29-alpine-perl
+  description = "Nginx image to use for the ECS task"
 }
 
 variable "tags" {

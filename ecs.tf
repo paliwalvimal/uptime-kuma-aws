@@ -1,16 +1,16 @@
 resource "aws_ecs_cluster" "this" {
-  name = "${var.name_prefix}-${local.module_name}"
+  name = "${var.name_prefix}${local.module_name}"
 
   setting {
     name  = "containerInsights"
-    value = "enhanced"
+    value = var.ecs_container_insights_level
   }
 
   tags = merge(
     var.tags,
-    {
+    var.ecs_enable_guardduty_monitoring ? {
       guardDutyRuntimeMonitoringManaged = "true"
-    }
+    }: {}
   )
 }
 
@@ -23,8 +23,7 @@ resource "aws_cloudwatch_log_group" "ecs_task" {
 }
 
 resource "aws_iam_role" "ecs_task_execution" {
-  name                 = "${var.name_prefix}-${local.module_name}-ecs-task-execution"
-  max_session_duration = 21600 # 6 hours
+  name                 = "${var.name_prefix}${local.module_name}-ecs-task-execution"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -45,7 +44,7 @@ resource "aws_iam_role" "ecs_task_execution" {
 resource "aws_iam_role_policy" "ecs_task_execution" {
   # checkov:skip=CKV_AWS_290: "Write access required to allow writing to CloudWatch logs"
   # checkov:skip=CKV_AWS_355: "'*' as a statement's resource is required to allow writing to CloudWatch logs"
-  name = "${var.name_prefix}-${local.module_name}-ecs-task-execution"
+  name = "${var.name_prefix}${local.module_name}-ecs-task-execution"
   role = aws_iam_role.ecs_task_execution.id
 
   policy = jsonencode({
@@ -74,8 +73,7 @@ resource "aws_iam_role_policy" "ecs_task_execution" {
 
 # IAM role for maptiler ECS task role
 resource "aws_iam_role" "ecs_task" {
-  name                 = "${var.name_prefix}-${local.module_name}-ecs-task"
-  max_session_duration = 21600 # 6 hours
+  name                 = "${var.name_prefix}${local.module_name}-ecs-task"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -100,13 +98,13 @@ resource "aws_iam_role" "ecs_task" {
 
 resource "aws_iam_role_policy" "ecs_task" {
   count  = var.ecs_task_iam_role_policy != "" ? 1 : 0
-  name   = "${var.name_prefix}-${local.module_name}-ecs-task"
+  name   = "${var.name_prefix}${local.module_name}-ecs-task"
   role   = aws_iam_role.ecs_task.id
   policy = var.ecs_task_iam_role_policy
 }
 
 resource "aws_ecs_task_definition" "this" {
-  family                   = local.ecs_task_family
+  family                   = var.ecs_task_family
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
   cpu                      = "1024"
@@ -149,7 +147,7 @@ resource "aws_ecs_task_definition" "this" {
       }
     },
     {
-      name                   = "${local.ecs_task_family}-init"
+      name                   = "${var.ecs_task_family}-init"
       image                  = "mirror.gcr.io/busybox:stable-musl"
       essential              = false
       readonlyRootFilesystem = true
@@ -157,7 +155,7 @@ resource "aws_ecs_task_definition" "this" {
       command                = ["sh", "-c", "wget -O /app/data/global-bundle.pem https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem"]
 
       mountPoints = [{
-        sourceVolume  = "${local.ecs_task_family}-data"
+        sourceVolume  = "${var.ecs_task_family}-data"
         containerPath = "/app/data"
         readOnly      = false
       }]
@@ -167,7 +165,7 @@ resource "aws_ecs_task_definition" "this" {
         options = {
           awslogs-group         = aws_cloudwatch_log_group.ecs_task.name
           awslogs-region        = var.region
-          awslogs-stream-prefix = "${local.ecs_task_family}-init"
+          awslogs-stream-prefix = "${var.ecs_task_family}-init"
         }
       }
 
@@ -179,21 +177,21 @@ resource "aws_ecs_task_definition" "this" {
       }
     },
     {
-      name                   = local.ecs_task_family
+      name                   = var.ecs_task_family
       essential              = true
       readonlyRootFilesystem = true
       privileged             = false
-      image                  = var.uptime_kuma_image
+      image                  = var.ecs_uptime_kuma_image
 
       dependsOn = [
         {
-          containerName = "${local.ecs_task_family}-init"
+          containerName = "${var.ecs_task_family}-init"
           condition     = "SUCCESS"
         }
       ]
 
       mountPoints = [{
-        sourceVolume  = "${local.ecs_task_family}-data"
+        sourceVolume  = "${var.ecs_task_family}-data"
         containerPath = "/app/data"
         readOnly      = false
       }]
@@ -203,7 +201,7 @@ resource "aws_ecs_task_definition" "this" {
         options = {
           awslogs-group         = aws_cloudwatch_log_group.ecs_task.name
           awslogs-region        = var.region
-          awslogs-stream-prefix = local.ecs_task_family
+          awslogs-stream-prefix = var.ecs_task_family
         }
       }
 
@@ -218,7 +216,7 @@ resource "aws_ecs_task_definition" "this" {
         appProtocol   = "http"
         containerPort = local.ecs_task_uptime_kuma_container_port
         hostPort      = local.ecs_task_uptime_kuma_container_port
-        name          = "${local.ecs_task_family}-${local.ecs_task_uptime_kuma_container_port}-tcp"
+        name          = "${var.ecs_task_family}-${local.ecs_task_uptime_kuma_container_port}-tcp"
         protocol      = "tcp"
       }]
 
@@ -233,15 +231,15 @@ resource "aws_ecs_task_definition" "this" {
         },
         {
           name  = "UPTIME_KUMA_DB_PORT"
-          value = tostring(local.db_port)
+          value = tostring(var.db_port)
         },
         {
           name  = "UPTIME_KUMA_DB_NAME"
-          value = local.db_name
+          value = var.db_name
         },
         {
           name  = "UPTIME_KUMA_DB_USERNAME"
-          value = local.db_username
+          value = var.db_username
         },
         {
           name  = "UPTIME_KUMA_DB_SSL"
@@ -262,7 +260,7 @@ resource "aws_ecs_task_definition" "this" {
     },
     {
       name                   = "nginx"
-      image                  = var.nginx_image
+      image                  = var.ecs_nginx_image
       cpu                    = 256
       memory                 = 512
       essential              = true
@@ -275,7 +273,7 @@ resource "aws_ecs_task_definition" "this" {
           condition     = "SUCCESS"
         },
         {
-          containerName = local.ecs_task_family
+          containerName = var.ecs_task_family
           condition     = "START"
         }
       ]
@@ -325,7 +323,7 @@ resource "aws_ecs_task_definition" "this" {
   ])
 
   volume {
-    name = "${local.ecs_task_family}-data"
+    name = "${var.ecs_task_family}-data"
   }
   volume {
     name = "nginx-conf"
@@ -343,8 +341,8 @@ resource "aws_ecs_task_definition" "this" {
 }
 
 resource "aws_security_group" "ecs_task" {
-  name        = "${local.ecs_task_family}-ecs-sg"
-  description = "Security group for ${local.ecs_task_family} ECS task"
+  name        = "${var.name_prefix}${local.module_name}-ecs-task"
+  description = "Security group for ${var.ecs_task_family} ECS task"
   vpc_id      = var.vpc_id
   tags        = var.tags
 }
@@ -378,10 +376,10 @@ resource "aws_vpc_security_group_egress_rule" "ecs_task_all" {
 }
 
 resource "aws_ecs_service" "this" {
-  name                          = local.ecs_task_family
+  name                          = var.ecs_task_family
   cluster                       = aws_ecs_cluster.this.arn
   task_definition               = aws_ecs_task_definition.this.arn
-  desired_count                 = local.ecs_task_min_capacity
+  desired_count                 = var.ecs_task_min_capacity
   launch_type                   = "FARGATE"
   availability_zone_rebalancing = "ENABLED"
   force_delete                  = true
@@ -408,15 +406,14 @@ resource "aws_ecs_service" "this" {
 
   lifecycle {
     ignore_changes = [
-      desired_count,
-      task_definition
+      desired_count
     ]
   }
 }
 
 resource "aws_appautoscaling_target" "this" {
-  max_capacity       = local.ecs_task_max_capacity
-  min_capacity       = local.ecs_task_min_capacity
+  max_capacity       = var.ecs_task_max_capacity
+  min_capacity       = var.ecs_task_min_capacity
   resource_id        = "service/${aws_ecs_cluster.this.name}/${aws_ecs_service.this.name}"
   scalable_dimension = "ecs:service:DesiredCount"
   service_namespace  = "ecs"
@@ -424,14 +421,14 @@ resource "aws_appautoscaling_target" "this" {
 }
 
 resource "aws_appautoscaling_policy" "this" {
-  name               = local.ecs_task_family
+  name               = var.ecs_task_family
   policy_type        = "TargetTrackingScaling"
   resource_id        = aws_appautoscaling_target.this.resource_id
   scalable_dimension = aws_appautoscaling_target.this.scalable_dimension
   service_namespace  = aws_appautoscaling_target.this.service_namespace
 
   target_tracking_scaling_policy_configuration {
-    target_value = local.ecs_task_appautoscaling_threshold
+    target_value = var.ecs_task_appautoscaling_threshold
     predefined_metric_specification {
       predefined_metric_type = "ECSServiceAverageCPUUtilization"
     }
