@@ -84,7 +84,7 @@ module "db" {
   backup_retention_period = var.db_backup_retention_period
 
   performance_insights_enabled           = var.db_performance_insights_enabled
-  enabled_cloudwatch_logs_exports        = var.cloudwatch_logs_exports
+  enabled_cloudwatch_logs_exports        = var.db_cloudwatch_logs_exports
   cloudwatch_log_group_kms_key_id        = var.cw_logs_kms_key_id
   cloudwatch_log_group_retention_in_days = var.cw_logs_retention_days
 

@@ -386,7 +386,7 @@ resource "aws_ecs_service" "this" {
   wait_for_steady_state         = true
 
   network_configuration {
-    subnets          = var.private_subnet_ids
+    subnets          = var.ecs_subnet_ids
     security_groups  = [aws_security_group.ecs_task.id]
     assign_public_ip = false
   }

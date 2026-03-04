@@ -7,7 +7,7 @@ variable "name_prefix" {
 variable "cw_logs_retention_days" {
   type        = number
   default     = 90
-  description = "Retention days for CloudWatch logs"
+  description = "Number of days to retain CloudWatch logs"
 }
 
 variable "cw_logs_kms_key_id" {
@@ -16,42 +16,30 @@ variable "cw_logs_kms_key_id" {
   description = "KMS key ID to use for encrypting CloudWatch logs"
 }
 
-variable "ecs_task_iam_role_policy" {
-  type        = string
-  default     = ""
-  description = "IAM role policy to attach to the ECS task IAM role"
-}
-
 variable "vpc_id" {
   type        = string
-  description = "ID of the VPC to deploy the ECS task security group"
+  description = "ID of the VPC to deploy resources"
 }
 
-variable "private_subnet_ids" {
+variable "alb_subnet_ids" {
   type        = list(string)
-  description = "List of private subnet IDs to deploy the ECS task"
-}
-
-variable "create_internal_alb" {
-  type = bool
-  default = true
-  description = "Use internal facing application load balancer to expose uptime-kuma running on ECS"
+  description = "List of subnet IDs to deploy the application load balancer"
 }
 
 variable "route53_zone_id" {
   type        = string
-  description = "Route53 zone ID to create the ALB DNS record"
+  description = "Route53 zone ID in which to create the ALB DNS record"
 }
 
 variable "domain_name" {
   type        = string
-  description = "Domain name to be used for the ALB DNS record"
+  description = "Domain name to use for creating ALB DNS record"
 }
 
 variable "db_engine_version" {
   type        = string
   default = "11.8.6"
-  description = "Engine version for the RDS database"
+  description = "Engine version to use for mariadb database"
 }
 
 variable "db_family" {
@@ -99,13 +87,13 @@ variable "db_max_allocated_storage" {
 variable "db_name" {
   type        = string
   default = "uptime_kuma"
-  description = "Default database to create"
+  description = "Default database to create for mariadb"
 }
 
 variable "db_username" {
   type        = string
   default = "admin"
-  description = "Master/admin user to create"
+  description = "Master/admin user to create for mariadb"
 }
 
 variable "db_password_version" {
@@ -117,19 +105,19 @@ variable "db_password_version" {
 variable "db_port" {
   type        = number
   default = 3306
-  description = "Port on which mariadb will listen for traffic"
+  description = "Port on which mariadb will listen for incomming traffic"
 }
 
 variable "db_multi_az" {
   type = bool
   default = true
-  description = "Create a multi-az RDS instance"
+  description = "Whether to create a multi-az RDS instance"
 }
 
 variable "db_publicly_accessible" {
   type = bool
   default = false
-  description = "Create a public facing RDS instance"
+  description = "Whether to create a public facing RDS instance"
 }
 
 variable "db_ca_cert_identifier" {
@@ -141,37 +129,37 @@ variable "db_ca_cert_identifier" {
 variable "db_auto_minor_version_upgrade" {
   type = bool
   default = true
-  description = "Auto upgrade minor version for database"
+  description = "Whether to auto upgrade minor version for database"
 }
 
 variable "db_allow_major_version_upgrade" {
   type = bool
   default = false
-  description = "Auto upgrade major version for database"
+  description = "Whether to auto upgrade major version for database"
 }
 
 variable "db_performance_insights_enabled" {
   type = bool
   default = false
-  description = "Enable performance insights for RDS instance"
+  description = "Whether to enable performance insights for RDS instance"
 }
 
 variable "db_skip_final_snapshot" {
   type = bool
   default = false
-  description = "Skip final snapshot before deleting RDS instance"
+  description = "Whether to skip final snapshot before deleting RDS instance"
 }
 
 variable "db_enable_deletion_protection" {
   type = bool
   default = true
-  description = "Enable deletion protection for the RDS instance"
+  description = "Whether to enable deletion protection for the RDS instance"
 }
 
 variable "db_apply_changes_immediately" {
   type = bool
   default = true
-  description = "Apply changes to the RDS instance immediately instead of scheduling it"
+  description = "Whether to apply changes to the RDS instance immediately instead of scheduling it"
 }
 
 variable "db_maintenance_window" {
@@ -192,7 +180,7 @@ variable "db_backup_retention_period" {
   description = "Number of days to retain the automatic backups"
 }
 
-variable "cloudwatch_logs_exports" {
+variable "db_cloudwatch_logs_exports" {
   type = list(string)
   default = ["general", "audit", "error", "slowquery"]
   description = "List of log types to export to CloudWatch for the RDS instance. Check [AWS doc](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_LogAccess.MariaDB.PublishtoCloudWatchLogs.html) for supported log types"
@@ -207,7 +195,13 @@ variable "ecs_container_insights_level" {
 variable "ecs_enable_guardduty_monitoring" {
   type = bool
   default = true
-  description = "Enable AWS GuardDuty Runtime Monitoring for the ECS cluster"
+  description = "Whether to enable AWS GuardDuty Runtime Monitoring for the ECS cluster"
+}
+
+variable "ecs_task_iam_role_policy" {
+  type        = string
+  default     = ""
+  description = "IAM role policy to attach to the ECS task IAM role"
 }
 
 variable "ecs_task_family" {
@@ -226,6 +220,11 @@ variable "ecs_task_max_capacity" {
   type        = string
   default = "4"
   description = "Max number of tasks to run for the service"
+}
+
+variable "ecs_subnet_ids" {
+  type        = list(string)
+  description = "List of subnet IDs to deploy the ECS task"
 }
 
 variable "ecs_task_appautoscaling_threshold" {
