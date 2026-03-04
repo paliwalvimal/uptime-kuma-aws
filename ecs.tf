@@ -64,7 +64,7 @@ resource "aws_iam_role_policy" "ecs_task_execution" {
           "ssm:GetParameters"
         ]
         Resource = [
-          aws_ssm_parameter.uptime_kuma_db_password.arn
+          aws_ssm_parameter.db_password.arn
         ]
       }
     ]
@@ -86,7 +86,7 @@ resource "aws_iam_role" "ecs_task" {
         }
         Condition = {
           ArnLike = {
-            "aws:SourceArn" = "arn:aws:ecs:${var.region}:${local.account_id}:*"
+            "aws:SourceArn" = "arn:aws:ecs:${local.region}:${local.account_id}:*"
           }
         }
       }
@@ -141,7 +141,7 @@ resource "aws_ecs_task_definition" "this" {
         logDriver = "awslogs"
         options = {
           awslogs-group         = aws_cloudwatch_log_group.ecs_task.name
-          awslogs-region        = var.region
+          awslogs-region        = local.region
           awslogs-stream-prefix = "nginx-init"
         }
       }
@@ -164,7 +164,7 @@ resource "aws_ecs_task_definition" "this" {
         logDriver = "awslogs"
         options = {
           awslogs-group         = aws_cloudwatch_log_group.ecs_task.name
-          awslogs-region        = var.region
+          awslogs-region        = local.region
           awslogs-stream-prefix = "${var.ecs_task_family}-init"
         }
       }
@@ -200,7 +200,7 @@ resource "aws_ecs_task_definition" "this" {
         logDriver = "awslogs"
         options = {
           awslogs-group         = aws_cloudwatch_log_group.ecs_task.name
-          awslogs-region        = var.region
+          awslogs-region        = local.region
           awslogs-stream-prefix = var.ecs_task_family
         }
       }
@@ -300,7 +300,7 @@ resource "aws_ecs_task_definition" "this" {
         logDriver = "awslogs"
         options = {
           awslogs-group         = aws_cloudwatch_log_group.ecs_task.name
-          awslogs-region        = var.region
+          awslogs-region        = local.region
           awslogs-stream-prefix = "nginx"
         }
       }
