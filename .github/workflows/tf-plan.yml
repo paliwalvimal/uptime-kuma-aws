@@ -28,9 +28,10 @@ jobs:
         run: terraform init
       - name: Terraform Plan
         id: plan
-        run: terraform plan -var 'vpc_id=vpc-0979999fe9ca93cc7' \
-              -var 'alb_subnet_ids=["subnet-0effa1e57c8f69bc0", "subnet-0c7abf9a5ed4ef7d3"]' \
-              -var 'route53_zone_id=ZBAH2G50E7ECW' \
-              -var 'domain_name=uptime-kuma.vimalpaliwal.com' \
-              -var 'db_subnet_ids=["subnet-0effa1e57c8f69bc0", "subnet-0c7abf9a5ed4ef7d3"]' \
-              -var 'ecs_subnet_ids=["subnet-0effa1e57c8f69bc0", "subnet-0c7abf9a5ed4ef7d3"]'
+        run: |
+          terraform plan -var 'vpc_id=vpc-0979999fe9ca93cc7' \
+            -var 'alb_subnet_ids=["subnet-0effa1e57c8f69bc0", "subnet-0c7abf9a5ed4ef7d3"]' \
+            -var 'route53_zone_id=ZBAH2G50E7ECW' \
+            -var 'domain_name=uptime-kuma.vimalpaliwal.com' \
+            -var 'db_subnet_ids=["subnet-0effa1e57c8f69bc0", "subnet-0c7abf9a5ed4ef7d3"]' \
+            -var 'ecs_subnet_ids=["subnet-0effa1e57c8f69bc0", "subnet-0c7abf9a5ed4ef7d3"]'
