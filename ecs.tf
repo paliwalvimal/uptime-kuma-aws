@@ -254,7 +254,7 @@ resource "aws_ecs_task_definition" "this" {
       secrets = [
         {
           name      = "UPTIME_KUMA_DB_PASSWORD"
-          valueFrom = aws_ssm_parameter.uptime_kuma_db_password.arn
+          valueFrom = aws_ssm_parameter.db_password.arn
         }
       ]
     },
