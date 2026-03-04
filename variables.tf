@@ -32,6 +32,12 @@ variable "private_subnet_ids" {
   description = "List of private subnet IDs to deploy the ECS task"
 }
 
+variable "create_internal_alb" {
+  type = bool
+  default = true
+  description = "Use internal facing application load balancer to expose uptime-kuma running on ECS"
+}
+
 variable "data_subnet_ids" {
   type        = list(string)
   description = "List of data subnet IDs to deploy the RDS database"
@@ -77,6 +83,96 @@ variable "db_max_allocated_storage" {
   description = "Max allocated storage for the RDS database"
 }
 
+variable "db_name" {
+  type        = string
+  default = "uptime_kuma"
+  description = "Default database to create"
+}
+
+variable "db_username" {
+  type        = string
+  default = "admin"
+  description = "Master/admin user to create"
+}
+
+variable "db_port" {
+  type        = number
+  default = 3306
+  description = "Port on which mariadb will listen for traffic"
+}
+
+variable "db_multi_az" {
+  type = bool
+  default = true
+  description = "Create a multi-az RDS instance"
+}
+
+variable "db_publicly_accessible" {
+  type = bool
+  default = false
+  description = "Create a public facing RDS instance"
+}
+
+variable "db_ca_cert_identifier" {
+  type = string
+  default = "rds-ca-rsa2048-g1"
+  description = "CA certification to use for the RDS instance"
+}
+
+variable "db_auto_minor_version_upgrade" {
+  type = bool
+  default = true
+  description = "Auto upgrade minor version for database"
+}
+
+variable "db_allow_major_version_upgrade" {
+  type = bool
+  default = false
+  description = "Auto upgrade major version for database"
+}
+
+variable "db_performance_insights_enabled" {
+  type = bool
+  default = false
+  description = "Enable performance insights for RDS instance"
+}
+
+variable "db_skip_final_snapshot" {
+  type = bool
+  default = false
+  description = "Skip final snapshot before deleting RDS instance"
+}
+
+variable "db_enable_deletion_protection" {
+  type = bool
+  default = true
+  description = "Enable deletion protection for the RDS instance"
+}
+
+variable "db_apply_changes_immediately" {
+  type = bool
+  default = true
+  description = "Apply changes to the RDS instance immediately instead of scheduling it"
+}
+
+variable "db_maintenance_window" {
+  type = string
+  default = "Sun:00:00-Sun:03:00"
+  description = "Maintenance window to set for the RDS instance"
+}
+
+variable "db_backup_window" {
+  type = string
+  default = "03:00-06:00"
+  description = "Backup window to set for the RDS instance"
+}
+
+variable "db_backup_retention_period" {
+  type = number
+  default = 7
+  description = "Number of days to retain the automatic backups"
+}
+
 variable "uptime_kuma_image" {
   type        = string
   default = "mirror.gcr.io/louislam/uptime-kuma@sha256:44014bc55a42037105faf371963dda525378cf8866b9b883c38ec18e54b9bd54"  # 2.1.3-slim
@@ -87,6 +183,30 @@ variable "nginx_image" {
   type        = string
   default = "mirror.gcr.io/nginxinc/nginx-unprivileged@sha256:846c4e33797e325a2f3d623d590610e5da8044fa907db91ce4c80dfa14d1df84" # 1.29-alpine-perl
   description = "Nginx image to use for the ECS task"
+}
+
+variable "ecs_task_family" {
+  type        = string
+  default = "uptime-kuma"
+  description = "Name of the ECS task family"
+}
+
+variable "ecs_task_min_capacity" {
+  type        = string
+  default = "1"
+  description = "Min number of tasks to always run for the service"
+}
+
+variable "ecs_task_max_capacity" {
+  type        = string
+  default = "4"
+  description = "Max number of tasks to run for the service"
+}
+
+variable "ecs_task_appautoscaling_threshold" {
+  type        = string
+  default = "60"
+  description = "Threshold to use for scaling the service"
 }
 
 variable "tags" {

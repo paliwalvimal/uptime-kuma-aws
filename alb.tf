@@ -4,7 +4,7 @@ module "alb" {
   name               = "${var.name_prefix}-${local.module_name}"
   vpc_id             = var.vpc_id
   subnets            = var.private_subnet_ids
-  internal           = true
+  internal           = var.internal_alb
   ip_address_type    = "ipv4"
   load_balancer_type = "application"
 
