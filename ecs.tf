@@ -10,7 +10,7 @@ resource "aws_ecs_cluster" "this" {
     var.tags,
     var.ecs_enable_guardduty_monitoring ? {
       guardDutyRuntimeMonitoringManaged = "true"
-    }: {}
+    } : {}
   )
 }
 
@@ -23,7 +23,7 @@ resource "aws_cloudwatch_log_group" "ecs_task" {
 }
 
 resource "aws_iam_role" "ecs_task_execution" {
-  name                 = "${var.name_prefix}${local.module_name}-ecs-task-execution"
+  name = "${var.name_prefix}${local.module_name}-ecs-task-execution"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -73,7 +73,7 @@ resource "aws_iam_role_policy" "ecs_task_execution" {
 
 # IAM role for maptiler ECS task role
 resource "aws_iam_role" "ecs_task" {
-  name                 = "${var.name_prefix}${local.module_name}-ecs-task"
+  name = "${var.name_prefix}${local.module_name}-ecs-task"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
