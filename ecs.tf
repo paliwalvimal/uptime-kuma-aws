@@ -114,6 +114,7 @@ resource "aws_ecs_task_definition" "this" {
 
   container_definitions = jsonencode([
     {
+      # loads custom nginx config to run nginx proxy as non-root user
       name                   = "nginx-init"
       image                  = "mirror.gcr.io/busybox:stable-musl"
       essential              = false
@@ -121,18 +122,18 @@ resource "aws_ecs_task_definition" "this" {
       privileged             = false
       command = [
         "sh", "-c",
-        "echo ${local.nginx_config_base64} | base64 -d | tee /etc/nginx/nginx.conf && chown -R 101:101 /tmp/nginx"
+        "echo ${local.nginx_config_base64} | base64 -d | tee ${local.ecs_task_nginx_conf_path}/nginx.conf && chown -R 101:101 ${local.ecs_task_nginx_tmp_path}"
       ]
 
       mountPoints = [
         {
           sourceVolume  = "nginx-conf"
-          containerPath = "/etc/nginx"
+          containerPath = local.ecs_task_nginx_conf_path
           readOnly      = false
         },
         {
           sourceVolume  = "nginx-tmp"
-          containerPath = "/tmp/nginx"
+          containerPath = local.ecs_task_nginx_tmp_path
           readOnly      = false
         }
       ]
@@ -147,16 +148,17 @@ resource "aws_ecs_task_definition" "this" {
       }
     },
     {
+      # downloads ssl cert to connect to mariadb securely
       name                   = "${var.ecs_task_family}-init"
       image                  = "mirror.gcr.io/busybox:stable-musl"
       essential              = false
       readonlyRootFilesystem = true
       privileged             = false
-      command                = ["sh", "-c", "wget -O /app/data/global-bundle.pem https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem"]
+      command                = ["sh", "-c", "wget -O ${local.ecs_task_mariadb_ssl_cert_path}/global-bundle.pem https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem"]
 
       mountPoints = [{
         sourceVolume  = "${var.ecs_task_family}-data"
-        containerPath = "/app/data"
+        containerPath = local.ecs_task_mariadb_ssl_cert_path
         readOnly      = false
       }]
 
@@ -192,7 +194,7 @@ resource "aws_ecs_task_definition" "this" {
 
       mountPoints = [{
         sourceVolume  = "${var.ecs_task_family}-data"
-        containerPath = "/app/data"
+        containerPath = local.ecs_task_mariadb_ssl_cert_path
         readOnly      = false
       }]
 
@@ -247,7 +249,7 @@ resource "aws_ecs_task_definition" "this" {
         },
         {
           name  = "UPTIME_KUMA_DB_CA_FILE"
-          value = "/app/data/global-bundle.pem"
+          value = "${local.ecs_task_mariadb_ssl_cert_path}/global-bundle.pem"
         }
       ]
 
@@ -286,12 +288,12 @@ resource "aws_ecs_task_definition" "this" {
       mountPoints = [
         {
           sourceVolume  = "nginx-conf"
-          containerPath = "/etc/nginx"
+          containerPath = local.ecs_task_nginx_conf_path
           readOnly      = true
         },
         {
           sourceVolume  = "nginx-tmp"
-          containerPath = "/tmp/nginx"
+          containerPath = local.ecs_task_nginx_tmp_path
           readOnly      = false
         }
       ]

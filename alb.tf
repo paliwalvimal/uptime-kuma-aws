@@ -8,7 +8,6 @@ module "alb" {
   ip_address_type    = "ipv4"
   load_balancer_type = "application"
 
-  # Security Group
   create_security_group      = true
   security_group_name        = "${var.name_prefix}${local.module_name}-alb"
   security_group_description = "Security group for ${var.name_prefix}${local.module_name} ALB"
