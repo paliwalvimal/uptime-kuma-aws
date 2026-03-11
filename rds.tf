@@ -71,8 +71,9 @@ module "db" {
   db_subnet_group_description     = var.db_create_subnet_group ? "Subnet group for ${local.module_name} database" : null
   subnet_ids                      = var.db_create_subnet_group ? var.db_subnet_ids : null
 
-  storage_encrypted     = true
   storage_type          = "gp3"
+  storage_encrypted     = true
+  kms_key_id            = var.db_kms_key_id
   allocated_storage     = var.db_allocated_storage
   max_allocated_storage = var.db_max_allocated_storage
 

@@ -72,6 +72,12 @@ variable "db_subnet_ids" {
   description = "List of subnet IDs to use for creating db subnet group. Note: Required if `db_create_subnet_group` is set to true"
 }
 
+variable "db_kms_key_id" {
+  type        = string
+  default     = null
+  description = "KMS key ARN to use for encrypting the RDS database"
+}
+
 variable "db_allocated_storage" {
   type        = number
   default     = 50
