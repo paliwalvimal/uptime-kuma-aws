@@ -64,7 +64,6 @@ module "db" {
   create_db_option_group    = false
   create_db_parameter_group = false
 
-  # DB subnet group
   create_db_subnet_group          = var.db_create_subnet_group
   db_subnet_group_use_name_prefix = false
   db_subnet_group_name            = var.db_subnet_group_name == "" ? "${var.name_prefix}${local.module_name}" : var.db_subnet_group_name

@@ -75,7 +75,7 @@ variable "db_subnet_ids" {
 variable "db_kms_key_id" {
   type        = string
   default     = null
-  description = "KMS key ARN to use for encrypting the RDS database"
+  description = "KMS key ARN to use for encrypting the RDS database. If not provided, default KMS key will be used"
 }
 
 variable "db_allocated_storage" {

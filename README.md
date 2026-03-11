@@ -62,7 +62,7 @@ module "uptime_kuma" {
 | db_engine_version | Engine version to use for mariadb database | `string` | `"11.8.6"` | no |
 | db_family | Family for the RDS database | `string` | `"mariadb11.8"` | no |
 | db_instance_type | Instance type for the RDS database | `string` | `"db.t4g.small"` | no |
-| db_kms_key_id | KMS key ARN to use for encrypting the RDS database | `string` | `null` | no |
+| db_kms_key_id | KMS key ARN to use for encrypting the RDS database. If not provided, default KMS key will be used | `string` | `null` | no |
 | db_maintenance_window | Maintenance window to set for the RDS instance | `string` | `"Sun:00:00-Sun:03:00"` | no |
 | db_max_allocated_storage | Max allocated storage for the RDS database | `number` | `500` | no |
 | db_multi_az | Whether to create a multi-az RDS instance | `bool` | `true` | no |
