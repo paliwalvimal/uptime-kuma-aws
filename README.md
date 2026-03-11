@@ -1,15 +1,5 @@
-# terraform-base-template
-
-This is a template repository that will serve as a starting point for all the new terraform modules
-
-## Important changes:
-- Replace `REPO_NAME` with the actual repository name in examples directory and .tf-header.md file
-- Update module name in the examples directory
-- Add title in the .tf-header.tf file
-- Update pre-commit hooks and tflint plugin version
-
 <!-- BEGIN_TF_DOCS -->
-# Title
+# Uptime Kuma Terraform Module
 
 ![License](https://img.shields.io/github/license/paliwalvimal/uptime-kuma-aws-tf?style=for-the-badge) ![Plan](https://img.shields.io/github/actions/workflow/status/paliwalvimal/uptime-kuma-aws-tf/tf-plan.yml?branch=main&label=Plan&style=for-the-badge) ![Checkov](https://img.shields.io/github/actions/workflow/status/paliwalvimal/uptime-kuma-aws-tf/checkov.yml?branch=main&label=Checkov&style=for-the-badge) ![Commit](https://img.shields.io/github/last-commit/paliwalvimal/uptime-kuma-aws-tf?style=for-the-badge) ![Release](https://img.shields.io/github/v/release/paliwalvimal/uptime-kuma-aws-tf?style=for-the-badge)
 
@@ -32,8 +22,15 @@ This terraform module will deploy the following services:
 # Usage Instructions
 ## Example
 ```hcl
-module "name" {
-  source = "github.com/terrablocks/REPO_NAME.git?ref=" # Always use `ref` to point module to a specific version or hash
+module "uptime_kuma" {
+  source = "github.com/paliwalvimal/uptime-kuma-aws-tf.git?ref=" # Always use `ref` to point module to a specific version or hash
+
+  vpc_id          = "vpc-xxxxxxxxxx"
+  alb_subnet_ids  = ["subnet-xxxxxxxxxx", "subnet-xxxxxxxxxx"]
+  route53_zone_id = "xxxxxxxxxx"
+  domain_name     = "example.com"
+  db_subnet_ids   = ["subnet-xxxxxxxxxx", "subnet-xxxxxxxxxx"]
+  ecs_subnet_ids  = ["subnet-xxxxxxxxxx", "subnet-xxxxxxxxxx"]
 }
 ```
 
