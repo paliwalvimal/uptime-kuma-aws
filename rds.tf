@@ -79,14 +79,20 @@ module "db" {
   auto_minor_version_upgrade  = var.db_auto_minor_version_upgrade
   allow_major_version_upgrade = var.db_allow_major_version_upgrade
 
-  maintenance_window      = var.db_maintenance_window
-  backup_window           = var.db_backup_window
-  backup_retention_period = var.db_backup_retention_period
+  maintenance_window       = var.db_maintenance_window
+  backup_window            = var.db_backup_window
+  backup_retention_period  = var.db_backup_retention_period
+  delete_automated_backups = var.db_delete_automated_backups
 
   performance_insights_enabled           = var.db_performance_insights_enabled
-  enabled_cloudwatch_logs_exports        = var.db_cloudwatch_logs_exports
-  cloudwatch_log_group_kms_key_id        = var.cw_logs_kms_key_id
-  cloudwatch_log_group_retention_in_days = var.cw_logs_retention_days
+  enabled_cloudwatch_logs_exports        = var.db_cw_logs_exports
+  cloudwatch_log_group_class             = var.db_cw_log_group_class
+  cloudwatch_log_group_kms_key_id        = var.db_cw_logs_kms_key_id
+  cloudwatch_log_group_retention_in_days = var.db_cw_logs_retention_days
+  cloudwatch_log_group_skip_destroy      = var.db_cw_log_group_skip_destroy
+
+  monitoring_interval = var.db_monitoring_interval
+  monitoring_role_arn = var.db_monitoring_role_arn
 
   skip_final_snapshot              = var.db_skip_final_snapshot
   final_snapshot_identifier_prefix = "${var.name_prefix}${local.module_name}"

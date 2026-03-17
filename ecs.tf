@@ -17,8 +17,8 @@ resource "aws_ecs_cluster" "this" {
 resource "aws_cloudwatch_log_group" "ecs_task" {
   # checkov:skip=CKV_AWS_338: "Ensure CloudWatch log groups retains logs for at least 1 year"
   name              = "/ecs/${aws_ecs_cluster.this.name}"
-  retention_in_days = var.cw_logs_retention_days
-  kms_key_id        = var.cw_logs_kms_key_id
+  retention_in_days = var.ecs_cw_logs_retention_days
+  kms_key_id        = var.ecs_cw_logs_kms_key_id
   tags              = var.tags
 }
 

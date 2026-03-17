@@ -4,18 +4,6 @@ variable "name_prefix" {
   description = "Prefix to add to the name of all the resources created by this module"
 }
 
-variable "cw_logs_retention_days" {
-  type        = number
-  default     = 90
-  description = "Number of days to retain CloudWatch logs"
-}
-
-variable "cw_logs_kms_key_id" {
-  type        = string
-  default     = null
-  description = "KMS key ID to use for encrypting CloudWatch logs"
-}
-
 variable "vpc_id" {
   type        = string
   description = "ID of the VPC to deploy resources"
@@ -288,12 +276,55 @@ variable "db_backup_retention_period" {
   description = "Number of days to retain the automatic backups"
 }
 
-variable "db_cloudwatch_logs_exports" {
+variable "db_delete_automated_backups" {
+  type        = bool
+  default     = true
+  description = "Whether to delete automated backups immediately after the DB instance is deleted"
+}
+
+variable "db_cw_logs_exports" {
   type        = list(string)
   default     = ["general", "audit", "error", "slowquery"]
   description = "List of log types to export to CloudWatch for the RDS instance. Check [AWS doc](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_LogAccess.MariaDB.PublishtoCloudWatchLogs.html) for supported log types"
 }
 
+variable "db_cw_log_group_class" {
+  type        = string
+  default     = "STANDARD"
+  description = "Specified the log class of the log group. **Valid values:** `STANDARD` or `INFREQUENT_ACCESS`"
+}
+
+variable "db_cw_logs_retention_days" {
+  type        = number
+  default     = 90
+  description = "Number of days to retain CloudWatch logs"
+}
+
+variable "db_cw_logs_kms_key_id" {
+  type        = string
+  default     = null
+  description = "KMS key ID to use for encrypting CloudWatch logs"
+}
+
+variable "db_cw_log_group_skip_destroy" {
+  type        = bool
+  default     = false
+  description = "Set to true if you do not wish the log group to be deleted at destroy time, and instead just remove the log group from the Terraform state"
+}
+
+variable "db_monitoring_interval" {
+  type        = number
+  default     = 0
+  description = "The interval, in seconds, between points when Enhanced Monitoring metrics are collected for the DB instance. To disable collecting Enhanced Monitoring metrics, keep it 0"
+}
+
+variable "db_monitoring_role_arn" {
+  type        = string
+  default     = null
+  description = "The ARN for the IAM role that permits RDS to send enhanced monitoring metrics to CloudWatch Logs. Must be specified if monitoring interval is a non-zero value"
+}
+
+# ECS variables
 variable "ecs_container_insights_level" {
   type        = string
   default     = "enhanced"
@@ -305,6 +336,19 @@ variable "ecs_enable_guardduty_monitoring" {
   default     = true
   description = "Whether to enable AWS GuardDuty Runtime Monitoring for the ECS cluster"
 }
+
+variable "ecs_cw_logs_retention_days" {
+  type        = number
+  default     = 90
+  description = "Number of days to retain CloudWatch logs for ECS cluster"
+}
+
+variable "ecs_cw_logs_kms_key_id" {
+  type        = string
+  default     = null
+  description = "KMS key ID to use for encrypting CloudWatch logs ECS cluster"
+}
+
 
 variable "ecs_task_iam_role_policy" {
   type        = string
