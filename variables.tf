@@ -303,7 +303,7 @@ variable "db_cw_logs_exports" {
 variable "db_cw_log_group_class" {
   type        = string
   default     = "STANDARD"
-  description = "Specified the log class of the log group. **Valid values:** `STANDARD` or `INFREQUENT_ACCESS`"
+  description = "Specify the log class of the log group. **Valid values:** `STANDARD`, `INFREQUENT_ACCESS` or `DELIVERY`"
 }
 
 variable "db_cw_logs_retention_days" {
@@ -361,6 +361,17 @@ variable "ecs_cw_logs_kms_key_id" {
   description = "KMS key ID to use for encrypting CloudWatch logs ECS cluster"
 }
 
+variable "ecs_cw_log_group_class" {
+  type        = string
+  default     = "STANDARD"
+  description = "Specify the log class of the log group. **Valid values:** `STANDARD`, `INFREQUENT_ACCESS` or `DELIVERY`"
+}
+
+variable "ecs_cw_log_group_skip_destroy" {
+  type        = bool
+  default     = false
+  description = "Set to true if you do not wish the log group to be deleted at destroy time, and instead just remove the log group from the Terraform state"
+}
 
 variable "ecs_task_iam_role_policy" {
   type        = string

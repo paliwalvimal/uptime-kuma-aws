@@ -72,7 +72,7 @@ module "uptime_kuma" {
 | db_backup_window | Backup window to set for the RDS instance | `string` | `"03:00-06:00"` | no |
 | db_ca_cert_identifier | CA certification to use for the RDS instance | `string` | `"rds-ca-rsa2048-g1"` | no |
 | db_create_subnet_group | Whether to create a new subnet group for RDS instance | `bool` | `true` | no |
-| db_cw_log_group_class | Specified the log class of the log group. **Valid values:** `STANDARD` or `INFREQUENT_ACCESS` | `string` | `"STANDARD"` | no |
+| db_cw_log_group_class | Specify the log class of the log group. **Valid values:** `STANDARD`, `INFREQUENT_ACCESS` or `DELIVERY` | `string` | `"STANDARD"` | no |
 | db_cw_log_group_skip_destroy | Set to true if you do not wish the log group to be deleted at destroy time, and instead just remove the log group from the Terraform state | `bool` | `false` | no |
 | db_cw_logs_exports | List of log types to export to CloudWatch for the RDS instance. Check [AWS doc](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_LogAccess.MariaDB.PublishtoCloudWatchLogs.html) for supported log types | `list(string)` | ```[ "general", "audit", "error", "slowquery" ]``` | no |
 | db_cw_logs_kms_key_id | KMS key ID to use for encrypting CloudWatch logs | `string` | `null` | no |
@@ -101,6 +101,8 @@ module "uptime_kuma" {
 | db_username | Master/admin user to create for mariadb | `string` | `"admin"` | no |
 | domain_name | Domain name to use for creating ALB DNS record | `string` | n/a | yes |
 | ecs_container_insights_level | Container Insights level for ECS cluster. **Valid values:** `enhanced`, `enabled`, `disabled` | `string` | `"enhanced"` | no |
+| ecs_cw_log_group_class | Specify the log class of the log group. **Valid values:** `STANDARD`, `INFREQUENT_ACCESS` or `DELIVERY` | `string` | `"STANDARD"` | no |
+| ecs_cw_log_group_skip_destroy | Set to true if you do not wish the log group to be deleted at destroy time, and instead just remove the log group from the Terraform state | `bool` | `false` | no |
 | ecs_cw_logs_kms_key_id | KMS key ID to use for encrypting CloudWatch logs ECS cluster | `string` | `null` | no |
 | ecs_cw_logs_retention_days | Number of days to retain CloudWatch logs for ECS cluster | `number` | `90` | no |
 | ecs_enable_guardduty_monitoring | Whether to enable AWS GuardDuty Runtime Monitoring for the ECS cluster | `bool` | `true` | no |

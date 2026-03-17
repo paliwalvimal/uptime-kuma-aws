@@ -19,6 +19,8 @@ resource "aws_cloudwatch_log_group" "ecs_task" {
   name              = "/ecs/${aws_ecs_cluster.this.name}"
   retention_in_days = var.ecs_cw_logs_retention_days
   kms_key_id        = var.ecs_cw_logs_kms_key_id
+  log_group_class   = var.ecs_cw_log_group_class
+  skip_destroy      = var.ecs_cw_log_group_skip_destroy
   tags              = var.tags
 }
 
