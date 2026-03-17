@@ -1,5 +1,5 @@
 resource "aws_ecs_cluster" "this" {
-  name = "${var.name_prefix}${local.module_name}"
+  name = local.resource_name
 
   setting {
     name  = "containerInsights"
@@ -23,7 +23,7 @@ resource "aws_cloudwatch_log_group" "ecs_task" {
 }
 
 resource "aws_iam_role" "ecs_task_execution" {
-  name = "${var.name_prefix}${local.module_name}-ecs-task-execution"
+  name = "${local.resource_name}-ecs-task-execution"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -44,7 +44,7 @@ resource "aws_iam_role" "ecs_task_execution" {
 resource "aws_iam_role_policy" "ecs_task_execution" {
   # checkov:skip=CKV_AWS_290: "Write access required to allow writing to CloudWatch logs"
   # checkov:skip=CKV_AWS_355: "'*' as a statement's resource is required to allow writing to CloudWatch logs"
-  name = "${var.name_prefix}${local.module_name}-ecs-task-execution"
+  name = "${local.resource_name}-ecs-task-execution"
   role = aws_iam_role.ecs_task_execution.id
 
   policy = jsonencode({
@@ -73,7 +73,7 @@ resource "aws_iam_role_policy" "ecs_task_execution" {
 
 # IAM role for maptiler ECS task role
 resource "aws_iam_role" "ecs_task" {
-  name = "${var.name_prefix}${local.module_name}-ecs-task"
+  name = "${local.resource_name}-ecs-task"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -98,7 +98,7 @@ resource "aws_iam_role" "ecs_task" {
 
 resource "aws_iam_role_policy" "ecs_task" {
   count  = var.ecs_task_iam_role_policy != "" ? 1 : 0
-  name   = "${var.name_prefix}${local.module_name}-ecs-task"
+  name   = "${local.resource_name}-ecs-task"
   role   = aws_iam_role.ecs_task.id
   policy = var.ecs_task_iam_role_policy
 }
@@ -343,7 +343,7 @@ resource "aws_ecs_task_definition" "this" {
 }
 
 resource "aws_security_group" "ecs_task" {
-  name        = "${var.name_prefix}${local.module_name}-ecs-task"
+  name        = "${local.resource_name}-ecs-task"
   description = "Security group for ${var.ecs_task_family} ECS task"
   vpc_id      = var.vpc_id
   tags        = var.tags

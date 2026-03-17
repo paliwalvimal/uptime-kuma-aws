@@ -11,7 +11,8 @@ locals {
   region     = data.aws_region.current.region
   vpc_cidr   = data.aws_vpc.selected.cidr_block
 
-  module_name = "uptime-kuma"
+  module_name   = "uptime-kuma"
+  resource_name = "${var.name_prefix}${local.module_name}"
 
   # ECS task variables
   ecs_task_uptime_kuma_container_port = 3001

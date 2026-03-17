@@ -89,6 +89,8 @@ module "uptime_kuma" {
 | db_monitoring_role_arn | The ARN for the IAM role that permits RDS to send enhanced monitoring metrics to CloudWatch Logs. Must be specified if monitoring interval is a non-zero value | `string` | `null` | no |
 | db_multi_az | Whether to create a multi-az RDS instance | `bool` | `true` | no |
 | db_name | Default database to create for mariadb | `string` | `"uptime_kuma"` | no |
+| db_option_group_name | Name of an existing option group to associate to the RDS instance | `string` | `null` | no |
+| db_parameter_group_name | Name of an existing parameter group to associate to the RDS instance | `string` | `null` | no |
 | db_password_version | To change database password, taint the random_password ephemeral resource and update the version number to update database password value in SSM parameter and RDS instance | `number` | `1` | no |
 | db_performance_insights_enabled | Whether to enable performance insights for RDS instance | `bool` | `false` | no |
 | db_port | Port on which mariadb will listen for incomming traffic | `number` | `3306` | no |

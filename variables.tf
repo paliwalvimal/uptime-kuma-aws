@@ -144,6 +144,18 @@ variable "db_instance_type" {
   description = "Instance type for the RDS database"
 }
 
+variable "db_option_group_name" {
+  type        = string
+  default     = null
+  description = "Name of an existing option group to associate to the RDS instance"
+}
+
+variable "db_parameter_group_name" {
+  type        = string
+  default     = null
+  description = "Name of an existing parameter group to associate to the RDS instance"
+}
+
 variable "db_create_subnet_group" {
   type        = bool
   default     = true

@@ -1,6 +1,6 @@
 resource "aws_security_group" "db" {
   # checkov:skip=CKV2_AWS_5: Associated to RDS database
-  name        = "${var.name_prefix}${local.module_name}-db"
+  name        = "${local.resource_name}-db"
   vpc_id      = var.vpc_id
   description = "Security group for uptime-kuma database"
   tags        = var.tags
@@ -34,7 +34,7 @@ ephemeral "random_password" "db_password" {
 
 resource "aws_ssm_parameter" "db_password" {
   # checkov:skip=CKV_AWS_337: "CMK not required"
-  name             = "/rds/${var.name_prefix}${local.module_name}/password"
+  name             = "/rds/${local.resource_name}/password"
   type             = "SecureString"
   value_wo         = ephemeral.random_password.db_password.result
   value_wo_version = var.db_password_version
@@ -44,7 +44,7 @@ resource "aws_ssm_parameter" "db_password" {
 module "db" {
   source = "github.com/terraform-aws-modules/terraform-aws-rds.git?ref=592cd8b" # v7.1.0
 
-  identifier             = "${var.name_prefix}${local.module_name}"
+  identifier             = local.resource_name
   engine                 = "mariadb"
   engine_version         = var.db_engine_version
   family                 = var.db_family
@@ -61,12 +61,17 @@ module "db" {
   password_wo_version         = var.db_password_version
   port                        = var.db_port
 
-  create_db_option_group    = false
-  create_db_parameter_group = false
+  create_db_option_group       = false
+  option_group_use_name_prefix = false
+  option_group_name            = var.db_option_group_name
+
+  create_db_parameter_group       = false
+  parameter_group_use_name_prefix = false
+  parameter_group_name            = var.db_parameter_group_name
 
   create_db_subnet_group          = var.db_create_subnet_group
   db_subnet_group_use_name_prefix = false
-  db_subnet_group_name            = var.db_subnet_group_name == "" ? "${var.name_prefix}${local.module_name}" : var.db_subnet_group_name
+  db_subnet_group_name            = coalesce(var.db_subnet_group_name, local.resource_name)
   db_subnet_group_description     = var.db_create_subnet_group ? "Subnet group for ${local.module_name} database" : null
   subnet_ids                      = var.db_create_subnet_group ? var.db_subnet_ids : null
 
@@ -95,7 +100,7 @@ module "db" {
   monitoring_role_arn = var.db_monitoring_role_arn
 
   skip_final_snapshot              = var.db_skip_final_snapshot
-  final_snapshot_identifier_prefix = "${var.name_prefix}${local.module_name}"
+  final_snapshot_identifier_prefix = local.resource_name
   deletion_protection              = var.db_enable_deletion_protection
   apply_immediately                = var.db_apply_changes_immediately
 

@@ -1,7 +1,7 @@
 module "alb" {
   source = "github.com/terraform-aws-modules/terraform-aws-alb.git?ref=87f1c9c" # v10.5.0
 
-  name               = "${var.name_prefix}${local.module_name}"
+  name               = local.resource_name
   vpc_id             = var.vpc_id
   subnets            = var.alb_subnet_ids
   internal           = true
@@ -9,8 +9,8 @@ module "alb" {
   load_balancer_type = "application"
 
   create_security_group      = true
-  security_group_name        = "${var.name_prefix}${local.module_name}-alb"
-  security_group_description = "Security group for ${var.name_prefix}${local.module_name} ALB"
+  security_group_name        = "${local.resource_name}-alb"
+  security_group_description = "Security group for ${local.resource_name} ALB"
   security_group_ingress_rules = {
     http = {
       from_port   = 80
@@ -40,7 +40,7 @@ module "alb" {
 
   target_groups = {
     http = {
-      name              = "${var.name_prefix}${local.module_name}"
+      name              = local.resource_name
       port              = local.ecs_task_nginx_container_port
       protocol          = "HTTP"
       create_attachment = false
