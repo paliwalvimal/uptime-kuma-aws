@@ -48,7 +48,22 @@ module "uptime_kuma" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| alb_access_logs | Map containing access logging configuration for the application load balancer | ```object({ bucket = string enabled = optional(bool, true) prefix = optional(string) })``` | `null` | no |
+| alb_connection_logs | Map containing connection logging configuration for the application load balancer | ```object({ bucket = string enabled = optional(bool, true) prefix = optional(string) })``` | `null` | no |
+| alb_desync_mitigation_mode | Determines how the load balancer handles requests that might pose a security risk to an application due to HTTP desync. **Valid values:** `monitor`, `defensive`, `strictest` | `string` | `"defensive"` | no |
+| alb_drop_invalid_header_fields | Whether HTTP headers with invalid header fields are removed by the load balancer (true) or routed to targets (false) | `bool` | `true` | no |
+| alb_enable_deletion_protection | Whether to protect deletion of load balancer from accidental deletion | `bool` | `true` | no |
+| alb_enable_http2 | Whether to enable support for HTTP/2 protocol | `bool` | `true` | no |
+| alb_enable_tls_version_and_cipher_suite_headers | Indicates whether the two headers `x-amzn-tls-version` and `x-amzn-tls-cipher-suite`, which contain information about the negotiated TLS version and cipher suite, are added to the client request before sending it to the target | `bool` | `false` | no |
+| alb_enable_waf_fail_open | Whether to allow a WAF-enabled load balancer to route requests to targets if it is unable to forward the request to AWS WAF | `bool` | `false` | no |
+| alb_enable_xff_client_port | Whether the X-Forwarded-For header should preserve the source port that the client used to connect to the load balancer | `bool` | `false` | no |
+| alb_enable_zonal_shift | Whether zonal shift is enabled | `bool` | `true` | no |
+| alb_health_check_logs | Map containing health check logging configuration for the application load balancer | ```object({ bucket = string enabled = optional(bool, true) prefix = optional(string) })``` | `null` | no |
+| alb_ip_address_type | Type of IP addresses used by the subnets for your load balancer. **Valid values:** `ipv4`, `dualstack` or `dualstack-without-public-ipv4` | `string` | `"ipv4"` | no |
+| alb_preserve_host_header | Whether the Application Load Balancer should preserve the Host header in the HTTP request and send it to the target without any change | `bool` | `false` | no |
 | alb_subnet_ids | List of subnet IDs to deploy the application load balancer | `list(string)` | n/a | yes |
+| alb_web_acl_arn | Web Application Firewall (WAF) ARN of the resource to associate with the load balancer | `string` | `null` | no |
+| alb_xff_header_processing_mode | Determines how the load balancer modifies the X-Forwarded-For header in the HTTP request before sending the request to the target. **Valid values:** `append`, `preserve`, and `remove` | `string` | `"append"` | no |
 | cw_logs_kms_key_id | KMS key ID to use for encrypting CloudWatch logs | `string` | `null` | no |
 | cw_logs_retention_days | Number of days to retain CloudWatch logs | `number` | `90` | no |
 | db_allocated_storage | Allocated storage for the RDS database | `number` | `50` | no |

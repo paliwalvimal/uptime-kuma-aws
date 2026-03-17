@@ -5,7 +5,7 @@ module "alb" {
   vpc_id             = var.vpc_id
   subnets            = var.alb_subnet_ids
   internal           = true
-  ip_address_type    = "ipv4"
+  ip_address_type    = var.alb_ip_address_type
   load_balancer_type = "application"
 
   create_security_group      = true
@@ -55,6 +55,24 @@ module "alb" {
       }
     }
   }
+
+  access_logs       = var.alb_access_logs
+  connection_logs   = var.alb_connection_logs
+  health_check_logs = var.alb_health_check_logs
+
+  desync_mitigation_mode                      = var.alb_desync_mitigation_mode
+  drop_invalid_header_fields                  = var.alb_drop_invalid_header_fields
+  enable_deletion_protection                  = var.alb_enable_deletion_protection
+  enable_http2                                = var.alb_enable_http2
+  enable_tls_version_and_cipher_suite_headers = var.alb_enable_tls_version_and_cipher_suite_headers
+  enable_waf_fail_open                        = var.alb_enable_waf_fail_open
+  enable_xff_client_port                      = var.alb_enable_xff_client_port
+  enable_zonal_shift                          = var.alb_enable_zonal_shift
+  preserve_host_header                        = var.alb_preserve_host_header
+  xff_header_processing_mode                  = var.alb_xff_header_processing_mode
+
+  associate_web_acl = var.alb_web_acl_arn != null
+  web_acl_arn       = var.alb_web_acl_arn
 
   route53_records = {
     a = {

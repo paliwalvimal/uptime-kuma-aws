@@ -26,6 +26,108 @@ variable "alb_subnet_ids" {
   description = "List of subnet IDs to deploy the application load balancer"
 }
 
+variable "alb_ip_address_type" {
+  type        = string
+  default     = "ipv4"
+  description = "Type of IP addresses used by the subnets for your load balancer. **Valid values:** `ipv4`, `dualstack` or `dualstack-without-public-ipv4`"
+}
+
+variable "alb_access_logs" {
+  type = object({
+    bucket  = string
+    enabled = optional(bool, true)
+    prefix  = optional(string)
+  })
+  default     = null
+  description = "Map containing access logging configuration for the application load balancer"
+}
+
+variable "alb_connection_logs" {
+  type = object({
+    bucket  = string
+    enabled = optional(bool, true)
+    prefix  = optional(string)
+  })
+  default     = null
+  description = "Map containing connection logging configuration for the application load balancer"
+}
+
+variable "alb_health_check_logs" {
+  type = object({
+    bucket  = string
+    enabled = optional(bool, true)
+    prefix  = optional(string)
+  })
+  default     = null
+  description = "Map containing health check logging configuration for the application load balancer"
+}
+
+variable "alb_desync_mitigation_mode" {
+  type        = string
+  default     = "defensive"
+  description = "Determines how the load balancer handles requests that might pose a security risk to an application due to HTTP desync. **Valid values:** `monitor`, `defensive`, `strictest`"
+}
+
+variable "alb_drop_invalid_header_fields" {
+  type        = bool
+  default     = true
+  description = "Whether HTTP headers with invalid header fields are removed by the load balancer (true) or routed to targets (false)"
+}
+
+variable "alb_enable_deletion_protection" {
+  type        = bool
+  default     = true
+  description = "Whether to protect deletion of load balancer from accidental deletion"
+}
+
+variable "alb_enable_http2" {
+  type        = bool
+  default     = true
+  description = "Whether to enable support for HTTP/2 protocol"
+}
+
+variable "alb_enable_tls_version_and_cipher_suite_headers" {
+  type        = bool
+  default     = false
+  description = "Indicates whether the two headers `x-amzn-tls-version` and `x-amzn-tls-cipher-suite`, which contain information about the negotiated TLS version and cipher suite, are added to the client request before sending it to the target"
+}
+
+variable "alb_enable_waf_fail_open" {
+  type        = bool
+  default     = false
+  description = "Whether to allow a WAF-enabled load balancer to route requests to targets if it is unable to forward the request to AWS WAF"
+}
+
+variable "alb_enable_xff_client_port" {
+  type        = bool
+  default     = false
+  description = "Whether the X-Forwarded-For header should preserve the source port that the client used to connect to the load balancer"
+}
+
+variable "alb_enable_zonal_shift" {
+  type        = bool
+  default     = true
+  description = "Whether zonal shift is enabled"
+}
+
+variable "alb_preserve_host_header" {
+  type        = bool
+  default     = false
+  description = "Whether the Application Load Balancer should preserve the Host header in the HTTP request and send it to the target without any change"
+}
+
+variable "alb_xff_header_processing_mode" {
+  type        = string
+  default     = "append"
+  description = "Determines how the load balancer modifies the X-Forwarded-For header in the HTTP request before sending the request to the target. **Valid values:** `append`, `preserve`, and `remove`"
+}
+
+variable "alb_web_acl_arn" {
+  type        = string
+  default     = null
+  description = "Web Application Firewall (WAF) ARN of the resource to associate with the load balancer"
+}
+
 variable "route53_zone_id" {
   type        = string
   description = "Route53 zone ID in which to create the ALB DNS record"
