@@ -97,10 +97,10 @@ module "uptime_kuma" {
 | db_publicly_accessible | Whether to create a public facing RDS instance | `bool` | `false` | no |
 | db_skip_final_snapshot | Whether to skip final snapshot before deleting RDS instance | `bool` | `false` | no |
 | db_subnet_group_name | Subnet group name to use for the RDS database | `string` | `""` | no |
-| db_subnet_ids | List of subnet IDs to use for creating db subnet group. Note: Required if `db_create_subnet_group` is set to true | `list(string)` | `[]` | no |
+| db_subnet_ids | List of subnet IDs to use for creating db subnet group. **Note:** Required if `db_create_subnet_group` is set to true | `list(string)` | `[]` | no |
 | db_username | Master/admin user to create for mariadb | `string` | `"admin"` | no |
 | domain_name | Domain name to use for creating ALB DNS record | `string` | n/a | yes |
-| ecs_container_insights_level | Container Insights level for ECS cluster. Supported values: `enhanced`, `enabled`, `disabled` | `string` | `"enhanced"` | no |
+| ecs_container_insights_level | Container Insights level for ECS cluster. **Valid values:** `enhanced`, `enabled`, `disabled` | `string` | `"enhanced"` | no |
 | ecs_cw_logs_kms_key_id | KMS key ID to use for encrypting CloudWatch logs ECS cluster | `string` | `null` | no |
 | ecs_cw_logs_retention_days | Number of days to retain CloudWatch logs for ECS cluster | `number` | `90` | no |
 | ecs_enable_guardduty_monitoring | Whether to enable AWS GuardDuty Runtime Monitoring for the ECS cluster | `bool` | `true` | no |

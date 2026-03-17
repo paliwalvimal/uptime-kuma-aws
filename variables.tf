@@ -171,7 +171,7 @@ variable "db_subnet_group_name" {
 variable "db_subnet_ids" {
   type        = list(string)
   default     = []
-  description = "List of subnet IDs to use for creating db subnet group. Note: Required if `db_create_subnet_group` is set to true"
+  description = "List of subnet IDs to use for creating db subnet group. **Note:** Required if `db_create_subnet_group` is set to true"
 }
 
 variable "db_kms_key_id" {
@@ -340,7 +340,7 @@ variable "db_monitoring_role_arn" {
 variable "ecs_container_insights_level" {
   type        = string
   default     = "enhanced"
-  description = "Container Insights level for ECS cluster. Supported values: `enhanced`, `enabled`, `disabled`"
+  description = "Container Insights level for ECS cluster. **Valid values:** `enhanced`, `enabled`, `disabled`"
 }
 
 variable "ecs_enable_guardduty_monitoring" {
