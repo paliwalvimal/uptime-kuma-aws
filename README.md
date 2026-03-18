@@ -106,14 +106,14 @@ module "uptime_kuma" {
 | ecs_cw_logs_kms_key_id | KMS key ID to use for encrypting CloudWatch logs ECS cluster | `string` | `null` | no |
 | ecs_cw_logs_retention_days | Number of days to retain CloudWatch logs for ECS cluster | `number` | `90` | no |
 | ecs_enable_guardduty_monitoring | Whether to enable AWS GuardDuty Runtime Monitoring for the ECS cluster | `bool` | `true` | no |
-| ecs_nginx_image | Nginx image to use for the ECS task | `string` | `"mirror.gcr.io/nginxinc/nginx-unprivileged@sha256:846c4e33797e325a2f3d623d590610e5da8044fa907db91ce4c80dfa14d1df84"` | no |
+| ecs_nginx_image | Nginx image to use for the ECS task | `string` | `"nginxinc/nginx-unprivileged@sha256:eae692a28a027c59cb51e8a991c48ed353cdc4a89cc0a02f86bfd632028a4164"` | no |
 | ecs_subnet_ids | List of subnet IDs to deploy the ECS task | `list(string)` | n/a | yes |
 | ecs_task_appautoscaling_threshold | Threshold to use for scaling the service | `string` | `"60"` | no |
 | ecs_task_family | Name of the ECS task family | `string` | `"uptime-kuma"` | no |
 | ecs_task_iam_role_policy | IAM role policy to attach to the ECS task IAM role | `string` | `""` | no |
 | ecs_task_max_capacity | Max number of tasks to run for the service | `string` | `"4"` | no |
 | ecs_task_min_capacity | Min number of tasks to always run for the service | `string` | `"1"` | no |
-| ecs_uptime_kuma_image | Uptime Kuma image to use for the ECS task | `string` | `"mirror.gcr.io/louislam/uptime-kuma@sha256:44014bc55a42037105faf371963dda525378cf8866b9b883c38ec18e54b9bd54"` | no |
+| ecs_uptime_kuma_image | Uptime Kuma image to use for the ECS task | `string` | `"louislam/uptime-kuma@sha256:059b49d6473904f2c8cba97582fd37cf4433c069816146e544afe7a7f3687f93"` | no |
 | name_prefix | Prefix to add to the name of all the resources created by this module | `string` | `"vp-"` | no |
 | route53_zone_id | Route53 zone ID in which to create the ALB DNS record | `string` | n/a | yes |
 | tags | A map of key value pair to assign to resources | `map(string)` | `{}` | no |

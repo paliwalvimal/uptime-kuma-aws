@@ -410,13 +410,13 @@ variable "ecs_task_appautoscaling_threshold" {
 
 variable "ecs_uptime_kuma_image" {
   type        = string
-  default     = "mirror.gcr.io/louislam/uptime-kuma@sha256:44014bc55a42037105faf371963dda525378cf8866b9b883c38ec18e54b9bd54" # 2.1.3-slim
+  default     = "louislam/uptime-kuma@sha256:059b49d6473904f2c8cba97582fd37cf4433c069816146e544afe7a7f3687f93" # 2.2.1-slim
   description = "Uptime Kuma image to use for the ECS task"
 }
 
 variable "ecs_nginx_image" {
   type        = string
-  default     = "mirror.gcr.io/nginxinc/nginx-unprivileged@sha256:846c4e33797e325a2f3d623d590610e5da8044fa907db91ce4c80dfa14d1df84" # 1.29-alpine-perl
+  default     = "nginxinc/nginx-unprivileged@sha256:eae692a28a027c59cb51e8a991c48ed353cdc4a89cc0a02f86bfd632028a4164" # 1.29.5-alpine-perl
   description = "Nginx image to use for the ECS task"
 }
 
