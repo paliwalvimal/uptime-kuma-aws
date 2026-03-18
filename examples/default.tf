@@ -1,5 +1,5 @@
 module "uptime_kuma" {
-  source = "github.com/paliwalvimal/uptime-kuma-aws-tf.git?ref=" # Always use `ref` to point module to a specific version or hash
+  source = "github.com/paliwalvimal/uptime-kuma-aws.git?ref=" # Always use `ref` to point module to a specific version or hash
 
   vpc_id          = "vpc-xxxxxxxxxx"
   alb_subnet_ids  = ["subnet-xxxxxxxxxx", "subnet-xxxxxxxxxx"]

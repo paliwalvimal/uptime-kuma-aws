@@ -1,7 +1,7 @@
 <!-- BEGIN_TF_DOCS -->
 # Uptime Kuma Terraform Module
 
-![License](https://img.shields.io/github/license/paliwalvimal/uptime-kuma-aws-tf?style=for-the-badge) ![Plan](https://img.shields.io/github/actions/workflow/status/paliwalvimal/uptime-kuma-aws-tf/tf-plan.yml?branch=main&label=Plan&style=for-the-badge) ![Checkov](https://img.shields.io/github/actions/workflow/status/paliwalvimal/uptime-kuma-aws-tf/checkov.yml?branch=main&label=Checkov&style=for-the-badge) ![Commit](https://img.shields.io/github/last-commit/paliwalvimal/uptime-kuma-aws-tf?style=for-the-badge) ![Release](https://img.shields.io/github/v/release/paliwalvimal/uptime-kuma-aws-tf?style=for-the-badge)
+![License](https://img.shields.io/github/license/paliwalvimal/uptime-kuma-aws?style=for-the-badge) ![Plan](https://img.shields.io/github/actions/workflow/status/paliwalvimal/uptime-kuma-aws/tf-plan.yml?branch=main&label=Plan&style=for-the-badge) ![Checkov](https://img.shields.io/github/actions/workflow/status/paliwalvimal/uptime-kuma-aws/checkov.yml?branch=main&label=Checkov&style=for-the-badge) ![Commit](https://img.shields.io/github/last-commit/paliwalvimal/uptime-kuma-aws?style=for-the-badge) ![Release](https://img.shields.io/github/v/release/paliwalvimal/uptime-kuma-aws?style=for-the-badge)
 
 ## Overview
 
@@ -25,7 +25,7 @@ This terraform module will deploy the following services:
 ## Example
 ```hcl
 module "uptime_kuma" {
-  source = "github.com/paliwalvimal/uptime-kuma-aws-tf.git?ref=" # Always use `ref` to point module to a specific version or hash
+  source = "github.com/paliwalvimal/uptime-kuma-aws.git?ref=" # Always use `ref` to point module to a specific version or hash
 
   vpc_id          = "vpc-xxxxxxxxxx"
   alb_subnet_ids  = ["subnet-xxxxxxxxxx", "subnet-xxxxxxxxxx"]
