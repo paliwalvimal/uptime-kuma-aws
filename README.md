@@ -9,9 +9,9 @@
 
 ## Overview
 
-[Uptime Kuma](https://github.com/louislam/uptime-kuma) is a self-hosted monitoring tool used to track the availability and response times of PlanetView services. It is deployed as an internal service within the shared services AWS account and is **not** publicly accessible — access requires an AWS Client VPN connection.
+[Uptime Kuma](https://github.com/louislam/uptime-kuma) is a self-hosted monitoring tool to track the availability and response times for web services.
 
-The service runs on ECS Fargate (ARM64) behind an Application Load Balancer and uses a MariaDB database on RDS for persistent storage. An nginx reverse proxy sits in front of Uptime Kuma to handle HTTP routing and health checks.
+By default, this Terraform module provisions uptime-kuma as a privately hosted service. It runs on AWS ECS Fargate (ARM64) behind an Application Load Balancer, with a MariaDB database hosted on Amazon RDS for persistent storage. An NGINX reverse proxy container is configured in front of Uptime Kuma container to handle HTTP routing and perform health checks.
 
 This terraform module will deploy the following services:
 - Route53 Record
@@ -40,8 +40,8 @@ module "uptime_kuma" {
 
 | Name | Version |
 |------|---------|
-| terraform | >= 1.12.0 |
-| aws | >= 6.0.0 |
+| terraform | >= 1.14.0 |
+| aws | >= 6.35.0 |
 | random | >= 3.8.1 |
 
 ## Inputs
